@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Validador de parámetros UTM para Google Analytics 4. Verifica que tus URLs de marketing tengan los parámetros correctos.">
+    <meta name="keywords" content="UTM, validador, Google Analytics, marketing digital, Promart">
+    <title>Validador UTM Promart | Verifica tus parámetros de campaña</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #718096;
+            font-size: 1.1em;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1em;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            margin-top: 30px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-10px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .success {
+            background: #f0fdf4;
+            border-color: #10b981;
+        }
+        
+        .warning {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+        
+        .error {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .param-list {
+            margin-top: 15px;
+        }
+        
+        .param-item {
+            padding: 12px;
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        
+        .param-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .param-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .param-value {
+            color: #2d3748;
+            word-break: break-all;
+        }
+        
+        .icon {
+            font-size: 24px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #718096;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        
+        .copy-btn {
+            background: #10b981;
+            padding: 10px 20px;
+            margin-top: 10px;
+            width: auto;
+            display: inline-block;
+        }
+        
+        .copy-btn:hover {
+            background: #059669;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+        }
+        
+        .quick-examples {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+        
+        .quick-examples h3 {
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+        
+        .example-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 5px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        
+        .example-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Validador UTM</h1>
+            <p class="subtitle">Verifica que tus parámetros UTM estén correctamente configurados para Google Analytics 4</p>
+            <span class="badge">Gratis y sin límites</span>
+        </div>
+        
+        <label for="urlInput">Pega tu URL con parámetros UTM aquí:</label>
+        <textarea id="urlInput" placeholder="Ejemplo: https://www.promart.ec/productos?utm_source=facebook&utm_medium=cpc&utm_campaign=black_friday_2025&utm_content=banner_principal"></textarea>
+        
+        <div class="quick-examples">
+            <h3>📝 Ejemplos rápidos:</h3>
+            <button class="example-btn" onclick="loadExample('facebook')">Facebook Ads</button>
+            <button class="example-btn" onclick="loadExample('google')">Google Ads</button>
+            <button class="example-btn" onclick="loadExample('email')">Email Marketing</button>
+            <button class="example-btn" onclick="loadExample('instagram')">Instagram</button>
+        </div>
+        
+        <button onclick="validateURL()">✨ Validar URL</button>
+        
+        <div id="results" class="results"></div>
+        
+        <div class="footer">
+            <p>💡 <strong>Tip:</strong> Este validador es gratuito y funciona 100% en tu navegador. No enviamos datos a ningún servidor.</p>
+            <p style="margin-top: 10px;">Creado para optimizar campañas de marketing digital | <a href="https://github.com" target="_blank" style="color: #667eea;">Contribuir en GitHub</a></p>
+        </div>
+    </div>
+    
+    <script>
+        const examples = {
+            facebook: 'https://www.promart.ec/244?map=productClusterIds&utm_source=facebook&utm_medium=paidsocial&utm_campaign=super_precios_feb_2025&utm_content=carousel_productos',
+            google: 'https://www.promart.ec/herramientas?utm_source=google&utm_medium=cpc&utm_campaign=herramientas_verano_2025&utm_content=search_ad&utm_term=taladros+baratos',
+            email: 'https://www.promart.ec/ofertas?utm_source=connectif&utm_medium=email&utm_campaign=newsletter_semanal&utm_content=banner_header',
+            instagram: 'https://www.promart.ec/nuevos?utm_source=instagram&utm_medium=paidsocial&utm_campaign=lanzamiento_producto&utm_content=stories_video'
+        };
+        
+        function loadExample(type) {
+            document.getElementById('urlInput').value = examples[type];
+            validateURL();
+        }
+        
+        function validateURL() {
+            const urlInput = document.getElementById('urlInput').value.trim();
+            const resultsDiv = document.getElementById('results');
+            
+            if (!urlInput) {
+                alert('⚠️ Por favor ingresa una URL para validar');
+                return;
+            }
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = '';
+            
+            try {
+                const url = new URL(urlInput);
+                const params = new URLSearchParams(url.search);
+                
+                const requiredParams = ['utm_source', 'utm_medium', 'utm_campaign'];
+                const optionalParams = ['utm_content', 'utm_term'];
+                
+                // Verificación básica
+                let basicChecks = '';
+                basicChecks += createCheck('HTTPS', url.protocol === 'https:', 
+                    'Conexión segura ✓', 'Recomendado usar HTTPS');
+                basicChecks += createCheck('Formato URL', url.hostname.length > 0, 
+                    'Dominio válido detectado', 'Formato de URL inválido');
+                
+                resultsDiv.innerHTML += `
+                    <div class="result-section ${url.protocol === 'https:' ? 'success' : 'warning'}">
+                        <div class="result-title">
+                            <span class="icon">${url.protocol === 'https:' ? '✅' : '⚠️'}</span>
+                            Verificación Básica
+                        </div>
+                        ${basicChecks}
+                        <p style="margin-top: 10px; font-size: 0.9em;"><strong>Dominio:</strong> ${url.hostname}</p>
+                    </div>
+                `;
+                
+                // Verificar parámetros UTM requeridos
+                let missingRequired = [];
+                let foundRequired = [];
+                
+                requiredParams.forEach(param => {
+                    if (params.has(param) && params.get(param)) {
+                        foundRequired.push(param);
+                    } else {
+                        missingRequired.push(param);
+                    }
+                });
+                
+                let foundOptional = [];
+                optionalParams.forEach(param => {
+                    if (params.has(param) && params.get(param)) {
+                        foundOptional.push(param);
+                    }
+                });
+                
+                // Mostrar parámetros encontrados
+                if (foundRequired.length === 3) {
+                    let paramsList = '<div class="param-list">';
+                    
+                    requiredParams.forEach(param => {
+                        const value = params.get(param);
+                        paramsList += `
+                            <div class="param-item">
+                                <span class="param-name">${param}</span>
+                                <span class="param-value">${value || '(vacío)'}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    optionalParams.forEach(param => {
+                        if (params.has(param) && params.get(param)) {
+                            const value = params.get(param);
+                            paramsList += `
+                                <div class="param-item">
+                                    <span class="param-name">${param} <span style="color: #718096; font-weight: normal;">(opcional)</span></span>
+                                    <span class="param-value">${value}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                    
+                    paramsList += '</div>';
+                    
+                    resultsDiv.innerHTML += `
+                        <div class="result-section success">
+                            <div class="result-title">
+                                <span class="icon">✅</span>
+                                Parámetros UTM - Todos Detectados
+                            </div>
+                            <p>¡Excelente! Todos los parámetros requeridos están presentes.</p>
+                            ${paramsList}
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML += `
+                        <div class="result-section error">
+                            <div class="result-title">
+                                <span class="icon">❌</span>
+                                Parámetros Faltantes
+                            </div>
+                            <p><strong>Los siguientes parámetros son obligatorios y están faltando:</strong></p>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                ${missingRequired.map(p => `<li><strong>${p}</strong></li>`).join('')}
+                            </ul>
+                            <p style="margin-top: 15px;">Sin estos parámetros, Google Analytics no podrá rastrear correctamente el origen del tráfico.</p>
+                        </div>
+                    `;
+                }
+                
+                // Validaciones de mejores prácticas
+                let warnings = [];
+                const source = params.get('utm_source');
+                const medium = params.get('utm_medium');
+                const campaign = params.get('utm_campaign');
+                const content = params.get('utm_content');
+                
+                if (source && /[A-Z]/.test(source)) {
+                    warnings.push('utm_source contiene mayúsculas. GA4 es case-sensitive, usa solo minúsculas para evitar duplicados.');
+                }
+                
+                if (medium && /[A-Z]/.test(medium)) {
+                    warnings.push('utm_medium contiene mayúsculas. Usa solo minúsculas para reportes consistentes.');
+                }
+                
+                if (campaign && /[A-Z]/.test(campaign)) {
+                    warnings.push('utm_campaign contiene mayúsculas. Mejor usar minúsculas para evitar duplicación en reportes.');
+                }
+                
+                if (source && /\s/.test(source)) {
+                    warnings.push('utm_source contiene espacios. Reemplaza espacios con guiones bajos (_).');
+                }
+                
+                if (medium && /\s/.test(medium)) {
+                    warnings.push('utm_medium contiene espacios. Usa guiones bajos (_) en su lugar.');
+                }
+                
+                if (campaign && /\s/.test(campaign)) {
+                    warnings.push('utm_campaign contiene espacios. Usa guiones bajos (_) para mejor tracking.');
+                }
+                
+                // Verificar mediums estándar para GA4
+                const validMediums = ['cpc', 'paidsocial', 'email', 'display', 'organic', 'referral', 'affiliate', 'social'];
+                if (medium && !validMediums.includes(medium.toLowerCase())) {
+                    warnings.push(`utm_medium="${medium}" no es un valor estándar de GA4. Valores recomendados: ${validMediums.join(', ')}. Esto afectará la agrupación de canales en tus reportes.`);
+                }
+                
+                // Advertir sobre URLs muy largas
+                if (urlInput.length > 2000) {
+                    warnings.push('La URL tiene más de 2000 caracteres. Algunas plataformas pueden truncarla.');
+                }
+                
+                if (warnings.length > 0) {
+                    resultsDiv.innerHTML += `
+                        <div class="result-section warning">
+                            <div class="result-title">
+                                <span class="icon">⚠️</span>
+                                Recomendaciones de Mejora
+                            </div>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                ${warnings.map(w => `<li>${w}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else if (foundRequired.length === 3) {
+                    resultsDiv.innerHTML += `
+                        <div class="result-section success">
+                            <div class="result-title">
+                                <span class="icon">🎉</span>
+                                ¡Perfecto!
+                            </div>
+                            <p>Tu URL cumple con todas las mejores prácticas de GA4. Está lista para usar en tus campañas.</p>
+                        </div>
+                    `;
+                }
+                
+                // Estadísticas
+                const totalUTMParams = Array.from(params.keys()).filter(k => k.startsWith('utm_')).length;
+                const totalParams = params.size;
+                const urlLength = urlInput.length;
+                
+                resultsDiv.innerHTML += `
+                    <div class="result-section success">
+                        <div class="result-title">
+                            <span class="icon">📊</span>
+                            Estadísticas de la URL
+                        </div>
+                        <div class="stats">
+                            <div class="stat-card">
+                                <div class="stat-number">${totalUTMParams}</div>
+                                <div class="stat-label">Parámetros UTM</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">${totalParams}</div>
+                                <div class="stat-label">Total Parámetros</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">${urlLength}</div>
+                                <div class="stat-label">Caracteres</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // URL final para copiar
+                resultsDiv.innerHTML += `
+                    <div class="result-section success">
+                        <div class="result-title">
+                            <span class="icon">🔗</span>
+                            URL Lista para Usar
+                        </div>
+                        <textarea readonly style="width: 100%; min-height: 100px; margin-top: 10px; font-size: 13px;">${urlInput}</textarea>
+                        <button class="copy-btn" onclick="copyToClipboard('${urlInput.replace(/'/g, "\\'")}')">
+                            📋 Copiar URL al Portapapeles
+                        </button>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="result-section error">
+                        <div class="result-title">
+                            <span class="icon">❌</span>
+                            Error al Analizar la URL
+                        </div>
+                        <p>La URL ingresada no tiene un formato válido. Verifica que:</p>
+                        <ul style="margin: 15px 0 15px 20px; line-height: 1.8;">
+                            <li>Comience con <strong>https://</strong> o <strong>http://</strong></li>
+                            <li>Tenga un dominio válido (ej: www.ejemplo.com)</li>
+                            <li>Los parámetros estén correctamente formateados</li>
+                            <li>No contenga caracteres especiales sin codificar</li>
+                        </ul>
+                        <p style="margin-top: 15px; padding: 10px; background: white; border-radius: 5px;"><strong>Error técnico:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function createCheck(label, condition, successMsg, errorMsg) {
+            return `
+                <div style="padding: 10px; margin: 8px 0; background: white; border-radius: 6px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 20px;">${condition ? '✅' : '❌'}</span>
+                    <span><strong>${label}:</strong> ${condition ? successMsg : errorMsg}</span>
+                </div>
+            `;
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ URL copiada al portapapeles');
+            }).catch(() => {
+                alert('❌ No se pudo copiar. Intenta seleccionar y copiar manualmente.');
+            });
+        }
+        
+        // Auto-validar si hay URL en los parámetros
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlToValidate = urlParams.get('url');
+            if (urlToValidate) {
+                document.getElementById('urlInput').value = decodeURIComponent(urlToValidate);
+                validateURL();
+            }
+        };
+    </script>
+</body>
+</html>
