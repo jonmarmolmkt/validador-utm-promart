@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Validador de parámetros UTM para Google Analytics 4. Verifica que tus URLs de marketing tengan los parámetros correctos.">
-    <meta name="keywords" content="UTM, validador, Google Analytics, marketing digital, Promart">
+    <meta name="description" content="Validador de parámetros UTM para Google Analytics 4 - Promart Ecuador">
+    <meta name="keywords" content="UTM, validador, Google Analytics, marketing digital, Promart, Ecuador">
     <title>Validador UTM Promart | Verifica tus parámetros de campaña</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>">
     <style>
@@ -32,7 +32,7 @@
         
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
         
         h1 {
@@ -72,7 +72,7 @@
             font-size: 14px;
             font-family: 'Courier New', monospace;
             resize: vertical;
-            min-height: 120px;
+            min-height: 100px;
             transition: all 0.3s;
         }
         
@@ -181,6 +181,8 @@
         .param-value {
             color: #2d3748;
             word-break: break-all;
+            max-width: 70%;
+            text-align: right;
         }
         
         .icon {
@@ -238,33 +240,29 @@
             color: #718096;
         }
         
-        .quick-examples {
-            margin: 20px 0;
-            padding: 15px;
+        .quick-example {
+            margin: 15px 0;
+            padding: 12px;
             background: #f7fafc;
             border-radius: 10px;
+            border-left: 3px solid #667eea;
         }
         
-        .quick-examples h3 {
-            margin-bottom: 10px;
-            color: #2d3748;
+        .quick-example p {
+            margin: 5px 0;
+            font-size: 0.95em;
+            color: #4a5568;
         }
         
-        .example-btn {
-            display: inline-block;
-            padding: 8px 15px;
-            margin: 5px;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.2s;
-        }
-        
-        .example-btn:hover {
-            border-color: #667eea;
+        .example-link {
             color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .example-link:hover {
+            text-decoration: underline;
         }
         
         @media (max-width: 768px) {
@@ -287,40 +285,34 @@
         <div class="header">
             <h1>🔍 Validador UTM</h1>
             <p class="subtitle">Verifica que tus parámetros UTM estén correctamente configurados para Google Analytics 4</p>
-            <span class="badge">Gratis y sin límites</span>
+            <span class="badge">Promart Ecuador - Gratis y sin límites</span>
         </div>
         
         <label for="urlInput">Pega tu URL con parámetros UTM aquí:</label>
-        <textarea id="urlInput" placeholder="Ejemplo: https://www.promart.ec/productos?utm_source=facebook&utm_medium=cpc&utm_campaign=black_friday_2025&utm_content=banner_principal"></textarea>
-        
-        <div class="quick-examples">
-            <h3>📝 Ejemplos rápidos:</h3>
-            <button class="example-btn" onclick="loadExample('facebook')">Facebook Ads</button>
-            <button class="example-btn" onclick="loadExample('google')">Google Ads</button>
-            <button class="example-btn" onclick="loadExample('email')">Email Marketing</button>
-            <button class="example-btn" onclick="loadExample('instagram')">Instagram</button>
-        </div>
+        <textarea id="urlInput" placeholder="Ejemplo: https://www.promart.ec/productos?utm_source=meta&utm_medium=paid_social&utm_campaign=super_precios_feb_2025&utm_content=carousel_productos"></textarea>
         
         <button onclick="validateURL()">✨ Validar URL</button>
+        
+        <div class="quick-example">
+            <p><strong>💡 Ejemplo rápido:</strong> <a class="example-link" onclick="loadExample()">Cargar URL de prueba</a></p>
+        </div>
         
         <div id="results" class="results"></div>
         
         <div class="footer">
-            <p>💡 <strong>Tip:</strong> Este validador es gratuito y funciona 100% en tu navegador. No enviamos datos a ningún servidor.</p>
-            <p style="margin-top: 10px;">Creado para optimizar campañas de marketing digital | <a href="https://github.com" target="_blank" style="color: #667eea;">Contribuir en GitHub</a></p>
+            <p>💡 <strong>Tip:</strong> Este validador funciona 100% en tu navegador. No enviamos datos a ningún servidor.</p>
+            <p style="margin-top: 10px;">Valores válidos según catálogo Promart | <a href="https://github.com/jonmarmolmkt/validador-utm-promart" target="_blank" style="color: #667eea;">Ver en GitHub</a></p>
         </div>
     </div>
     
     <script>
-        const examples = {
-            facebook: 'https://www.promart.ec/244?map=productClusterIds&utm_source=facebook&utm_medium=paidsocial&utm_campaign=super_precios_feb_2025&utm_content=carousel_productos',
-            google: 'https://www.promart.ec/herramientas?utm_source=google&utm_medium=cpc&utm_campaign=herramientas_verano_2025&utm_content=search_ad&utm_term=taladros+baratos',
-            email: 'https://www.promart.ec/ofertas?utm_source=connectif&utm_medium=email&utm_campaign=newsletter_semanal&utm_content=banner_header',
-            instagram: 'https://www.promart.ec/nuevos?utm_source=instagram&utm_medium=paidsocial&utm_campaign=lanzamiento_producto&utm_content=stories_video'
-        };
+        // Valores válidos según el Excel de Promart
+        const VALID_SOURCES = ['meta', 'google', 'connectif', 'mailup', 'cece'];
+        const VALID_MEDIUMS = ['paid_social', 'organic_social', 'cpc', 'email', 'display', 'referral'];
         
-        function loadExample(type) {
-            document.getElementById('urlInput').value = examples[type];
+        function loadExample() {
+            const exampleURL = 'https://www.promart.ec/244?map=productClusterIds&order=OrderByBestDiscountDESC&utm_source=meta&utm_medium=paid_social&utm_campaign=super_precios_feb_2025&utm_content=carousel_productos';
+            document.getElementById('urlInput').value = exampleURL;
             validateURL();
         }
         
@@ -347,13 +339,15 @@
                 let basicChecks = '';
                 basicChecks += createCheck('HTTPS', url.protocol === 'https:', 
                     'Conexión segura ✓', 'Recomendado usar HTTPS');
-                basicChecks += createCheck('Formato URL', url.hostname.length > 0, 
-                    'Dominio válido detectado', 'Formato de URL inválido');
+                
+                const isPromartDomain = url.hostname.includes('promart.ec');
+                basicChecks += createCheck('Dominio Promart', isPromartDomain, 
+                    'Dominio de Promart detectado', 'Verifica que sea el dominio correcto');
                 
                 resultsDiv.innerHTML += `
-                    <div class="result-section ${url.protocol === 'https:' ? 'success' : 'warning'}">
+                    <div class="result-section ${url.protocol === 'https:' && isPromartDomain ? 'success' : 'warning'}">
                         <div class="result-title">
-                            <span class="icon">${url.protocol === 'https:' ? '✅' : '⚠️'}</span>
+                            <span class="icon">${url.protocol === 'https:' && isPromartDomain ? '✅' : '⚠️'}</span>
                             Verificación Básica
                         </div>
                         ${basicChecks}
@@ -434,13 +428,25 @@
                     `;
                 }
                 
-                // Validaciones de mejores prácticas
+                // Validaciones de mejores prácticas y catálogo Promart
                 let warnings = [];
+                let errors = [];
+                
                 const source = params.get('utm_source');
                 const medium = params.get('utm_medium');
                 const campaign = params.get('utm_campaign');
-                const content = params.get('utm_content');
                 
+                // Validar source contra catálogo
+                if (source && !VALID_SOURCES.includes(source.toLowerCase())) {
+                    errors.push(`utm_source="${source}" NO está en el catálogo de Promart. Valores válidos: ${VALID_SOURCES.join(', ')}`);
+                }
+                
+                // Validar medium contra catálogo
+                if (medium && !VALID_MEDIUMS.includes(medium.toLowerCase())) {
+                    errors.push(`utm_medium="${medium}" NO está en el catálogo de Promart. Valores válidos: ${VALID_MEDIUMS.join(', ')}`);
+                }
+                
+                // Validaciones de formato
                 if (source && /[A-Z]/.test(source)) {
                     warnings.push('utm_source contiene mayúsculas. GA4 es case-sensitive, usa solo minúsculas para evitar duplicados.');
                 }
@@ -454,21 +460,20 @@
                 }
                 
                 if (source && /\s/.test(source)) {
-                    warnings.push('utm_source contiene espacios. Reemplaza espacios con guiones bajos (_).');
+                    errors.push('utm_source contiene espacios. Reemplaza espacios con guiones bajos (_).');
                 }
                 
                 if (medium && /\s/.test(medium)) {
-                    warnings.push('utm_medium contiene espacios. Usa guiones bajos (_) en su lugar.');
+                    errors.push('utm_medium contiene espacios. Usa guiones bajos (_) en su lugar.');
                 }
                 
                 if (campaign && /\s/.test(campaign)) {
-                    warnings.push('utm_campaign contiene espacios. Usa guiones bajos (_) para mejor tracking.');
+                    errors.push('utm_campaign contiene espacios. Usa guiones bajos (_) para mejor tracking.');
                 }
                 
-                // Verificar mediums estándar para GA4
-                const validMediums = ['cpc', 'paidsocial', 'email', 'display', 'organic', 'referral', 'affiliate', 'social'];
-                if (medium && !validMediums.includes(medium.toLowerCase())) {
-                    warnings.push(`utm_medium="${medium}" no es un valor estándar de GA4. Valores recomendados: ${validMediums.join(', ')}. Esto afectará la agrupación de canales en tus reportes.`);
+                // Verificar formato de campaña (debe incluir fecha)
+                if (campaign && !campaign.match(/_\w{3}_\d{4}$/)) {
+                    warnings.push('utm_campaign no incluye fecha en formato recomendado. Ejemplo: super_precios_feb_2025');
                 }
                 
                 // Advertir sobre URLs muy largas
@@ -476,6 +481,23 @@
                     warnings.push('La URL tiene más de 2000 caracteres. Algunas plataformas pueden truncarla.');
                 }
                 
+                // Mostrar errores críticos
+                if (errors.length > 0) {
+                    resultsDiv.innerHTML += `
+                        <div class="result-section error">
+                            <div class="result-title">
+                                <span class="icon">❌</span>
+                                Errores Críticos
+                            </div>
+                            <p><strong>Estos problemas deben corregirse antes de usar la URL:</strong></p>
+                            <ul style="margin-left: 20px; line-height: 1.8; margin-top: 10px;">
+                                ${errors.map(e => `<li>${e}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                // Mostrar advertencias
                 if (warnings.length > 0) {
                     resultsDiv.innerHTML += `
                         <div class="result-section warning">
@@ -488,14 +510,17 @@
                             </ul>
                         </div>
                     `;
-                } else if (foundRequired.length === 3) {
+                }
+                
+                // Si todo está perfecto
+                if (errors.length === 0 && warnings.length === 0 && foundRequired.length === 3) {
                     resultsDiv.innerHTML += `
                         <div class="result-section success">
                             <div class="result-title">
                                 <span class="icon">🎉</span>
                                 ¡Perfecto!
                             </div>
-                            <p>Tu URL cumple con todas las mejores prácticas de GA4. Está lista para usar en tus campañas.</p>
+                            <p>Tu URL cumple con todas las mejores prácticas de GA4 y el catálogo de Promart. Está lista para usar en tus campañas.</p>
                         </div>
                     `;
                 }
@@ -533,7 +558,7 @@
                     <div class="result-section success">
                         <div class="result-title">
                             <span class="icon">🔗</span>
-                            URL Lista para Usar
+                            URL Validada
                         </div>
                         <textarea readonly style="width: 100%; min-height: 100px; margin-top: 10px; font-size: 13px;">${urlInput}</textarea>
                         <button class="copy-btn" onclick="copyToClipboard('${urlInput.replace(/'/g, "\\'")}')">
@@ -552,7 +577,7 @@
                         <p>La URL ingresada no tiene un formato válido. Verifica que:</p>
                         <ul style="margin: 15px 0 15px 20px; line-height: 1.8;">
                             <li>Comience con <strong>https://</strong> o <strong>http://</strong></li>
-                            <li>Tenga un dominio válido (ej: www.ejemplo.com)</li>
+                            <li>Tenga un dominio válido (ej: www.promart.ec)</li>
                             <li>Los parámetros estén correctamente formateados</li>
                             <li>No contenga caracteres especiales sin codificar</li>
                         </ul>
